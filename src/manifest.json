@@ -1,0 +1,14 @@
+{
+  "name": "notion-replace-text",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_title": "Notion Replace Text"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-scripts/main.ts"]
+    }
+  ]
+}

@@ -2,12 +2,22 @@
   "name": "notion-replace-text",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "npm-watch",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
+  "watch": {
+    "build": {
+      "patterns": [
+        "src"
+      ],
+      "extensions": "ts,json",
+      "runOnChangeOnly": false
+    }
+  },
   "devDependencies": {
     "@types/node": "^17.0.5",
+    "npm-watch": "^0.11.0",
     "typescript": "^4.4.4",
     "vite": "^2.7.2",
     "vite-plugin-chrome-extension": "^0.0.7"

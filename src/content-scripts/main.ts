@@ -3,9 +3,10 @@ import '@webcomponents/custom-elements'
 
 import SearchWindow from './searchWindow'
 
-const getLastDescendant = ($parent: HTMLElement): HTMLElement => {
+/** 要素の子孫を辿って、最初の葉を返す */
+const getFirstLeaf = ($parent: HTMLElement): HTMLElement => {
   if ($parent.childElementCount > 0) {
-    return getLastDescendant($parent.children[0] as HTMLElement)
+    return getFirstLeaf($parent.children[0] as HTMLElement)
   }
   return $parent
 }
@@ -20,20 +21,21 @@ const replaceAllInBlock = ($block: HTMLElement, replacedText: string) => {
 
 // TODO たまに変更内容が正しくサーバーに送られない場合がある
 const replaceText = (searchVal: string, replaceTo: string) => {
+  if (!window.confirm('一括置換します')) {
+    return
+  }
   const notionTextBlocks = Array.prototype.slice.call(
     document.getElementsByClassName('notion-text-block')
   ) as HTMLElement[]
-  if (window.confirm('一括置換します')) {
-    notionTextBlocks.forEach(($textBlock) => {
-      let text = $textBlock.innerText
-      while (text.includes(searchVal)) {
-        const replacedText = text.replace(searchVal, replaceTo)
-        const $leaf = getLastDescendant($textBlock)
-        replaceAllInBlock($leaf, replacedText) // TODO 本当は毎回の置換前に確認したい
-        text = $textBlock.innerText
-      }
-    })
-  }
+  notionTextBlocks.forEach(($textBlock) => {
+    let text = $textBlock.innerText
+    while (text.includes(searchVal)) {
+      const replacedText = text.replace(searchVal, replaceTo)
+      const $leaf = getFirstLeaf($textBlock)
+      replaceAllInBlock($leaf, replacedText) // TODO 本当は毎回の置換前に確認したい
+      text = $textBlock.innerText
+    }
+  })
 }
 
 customElements.define('search-window', SearchWindow)

@@ -1,3 +1,8 @@
+// polyfill for using web components in chrome extension (refs: https://stackoverflow.com/questions/30022350)
+import '@webcomponents/custom-elements'
+
+import SearchWindow from './searchWindow'
+
 const getLastDescendant = ($parent: HTMLElement): HTMLElement => {
   if ($parent.childElementCount > 0) {
     return getLastDescendant($parent.children[0] as HTMLElement)
@@ -31,17 +36,10 @@ const replaceText = (searchVal: string, replaceTo: string) => {
   }
 }
 
-// TODO 入力受け取るようにしたい
-const searchVal = 'ab'
-const replaceTo = 'dc'
-
-const $btn = document.createElement('button')
-$btn.innerText = '一括置換'
-$btn.onclick = () => replaceText(searchVal, replaceTo)
-$btn.style.cssText = `
-  position: fixed;
-  top: 60px;
-  right: 24px;
-  z-index: 999999;
-`
-document.body.appendChild($btn)
+customElements.define('search-window', SearchWindow)
+const $searchWindow = document.createElement('search-window')
+$searchWindow.addEventListener('submit', (e) => {
+  const { searchVal, replaceTo } = (e as any).detail
+  replaceText(searchVal, replaceTo)
+})
+document.body.append($searchWindow)

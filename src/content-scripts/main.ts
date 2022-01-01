@@ -3,6 +3,13 @@ import '@webcomponents/custom-elements'
 
 import SearchWindow from './searchWindow'
 
+const wait = async (milliseconds: number) => {
+  // eslint-disable-next-line promise/avoid-new
+  return new Promise<void>((resolve) => {
+    setTimeout(resolve, milliseconds)
+  })
+}
+
 /** 要素の子孫を辿って、最初の葉を返す */
 const getFirstLeaf = ($parent: HTMLElement): HTMLElement => {
   if ($parent.childElementCount > 0) {
@@ -19,14 +26,25 @@ const replaceAllInBlock = ($block: HTMLElement, replacedText: string) => {
   document.execCommand('insertText', false, replacedText)
 }
 
-// TODO たまに変更内容が正しくサーバーに送られない場合がある
-const replaceText = (searchVal: string, replaceTo: string) => {
+const replaceText = async (searchVal: string, replaceTo: string) => {
   if (!window.confirm('一括置換します')) {
     return
   }
+
   const notionTextBlocks = Array.prototype.slice.call(
     document.getElementsByClassName('notion-text-block')
   ) as HTMLElement[]
+  if (notionTextBlocks.length === 0) {
+    return
+  }
+
+  // ページ内の何かを click して focus してからでないと、 replaceText() で書き換えた内容が反映されない。
+  // とりあえず notionTextBlocks の最初の要素を使う。(タイトルブロック等でも良い。)
+  const firstBlock = getFirstLeaf(notionTextBlocks[0])
+  firstBlock.click()
+  firstBlock.focus()
+  await wait(500) // 少し待つ必要がある
+
   notionTextBlocks.forEach(($textBlock) => {
     let text = $textBlock.innerText
     while (text.includes(searchVal)) {

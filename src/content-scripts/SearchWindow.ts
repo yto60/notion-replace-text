@@ -14,9 +14,11 @@ export default class SearchWindow extends HTMLElement {
     const searchValInput = document.createElement('input')
     searchValInput.setAttribute('class', 'search-val-input')
     searchValInput.placeholder = '検索'
+    searchValInput.addEventListener('keydown', inputKeydownHandler)
     const replaceToInput = document.createElement('input')
     replaceToInput.setAttribute('class', 'replace-to-input')
     replaceToInput.placeholder = '置換'
+    replaceToInput.addEventListener('keydown', inputKeydownHandler)
 
     // buttons
     const replaceAllButton = document.createElement('button')
@@ -44,4 +46,8 @@ export default class SearchWindow extends HTMLElement {
     const event = new CustomEvent('submit', { detail })
     this.dispatchEvent(event)
   }
+}
+
+const inputKeydownHandler = (e: KeyboardEvent) => {
+  e.stopPropagation()
 }

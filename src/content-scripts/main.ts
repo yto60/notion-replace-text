@@ -3,6 +3,18 @@ import '@webcomponents/custom-elements'
 
 import SearchWindow from './searchWindow'
 
+let $searchWindow: HTMLElement
+
+function main() {
+  customElements.define('search-window', SearchWindow)
+  $searchWindow = document.createElement('search-window')
+  $searchWindow.addEventListener('submit', (e: any) => {
+    const { searchVal, replaceTo } = e.detail
+    replaceText(searchVal, replaceTo)
+  })
+  document.body.append($searchWindow)
+}
+
 const wait = async (milliseconds: number) => {
   // eslint-disable-next-line promise/avoid-new
   return new Promise<void>((resolve) => {
@@ -33,6 +45,7 @@ const replaceText = async (searchVal: string, replaceTo: string) => {
   if (!window.confirm('Replace All?')) {
     return
   }
+  $searchWindow.setAttribute('loading', '')
 
   const notionTextBlocks = Array.prototype.slice.call(
     document.getElementsByClassName('notion-text-block')
@@ -57,12 +70,7 @@ const replaceText = async (searchVal: string, replaceTo: string) => {
       text = $textBlock.innerText
     }
   })
+  $searchWindow.removeAttribute('loading')
 }
 
-customElements.define('search-window', SearchWindow)
-const $searchWindow = document.createElement('search-window')
-$searchWindow.addEventListener('submit', (e) => {
-  const { searchVal, replaceTo } = (e as any).detail
-  replaceText(searchVal, replaceTo)
-})
-document.body.append($searchWindow)
+main()

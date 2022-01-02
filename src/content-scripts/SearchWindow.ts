@@ -1,14 +1,38 @@
-import searchWindowStyles from './searchWindow.css'
+import searchWindowStyles from './searchWindow.scss'
+
+export const REPLACE_ICON_URL =
+  'https://api.iconify.design/codicon:replace-all.svg'
+export const LOADING_ICON_URL =
+  'https://api.iconify.design/eos-icons:three-dots-loading.svg'
 
 export default class SearchWindow extends HTMLElement {
-  constructor() {
-    super()
+  private rendered = false
+  private _replaceAllButton: HTMLButtonElement = document.createElement(
+    'button'
+  )
+  private _replaceIcon: HTMLImageElement = document.createElement('img')
 
-    const shadow = this.attachShadow({ mode: 'open' })
+  connectedCallback() {
+    if (this.rendered) {
+      return
+    }
 
     // wrapper
     const wrapper = document.createElement('div')
     wrapper.setAttribute('class', 'wrapper')
+
+    // buttons
+    this._replaceAllButton.setAttribute('class', 'replace-all-button')
+    this._replaceAllButton.addEventListener('click', () => {
+      if (this.isLoading) {
+        return
+      }
+      this.fireSubmitEvent({
+        searchVal: searchValInput.value,
+        replaceTo: replaceToInput.value
+      })
+    })
+    this.setReplaceAllButtonStatus(false)
 
     // inputs
     const searchValInput = document.createElement('input')
@@ -20,29 +44,48 @@ export default class SearchWindow extends HTMLElement {
     replaceToInput.placeholder = 'Replace'
     replaceToInput.addEventListener('keydown', inputKeydownHandler)
 
-    // buttons
-    const replaceAllButton = document.createElement('button')
-    replaceAllButton.setAttribute('class', 'replace-all-button')
-    replaceAllButton.innerText = '一括置換'
-    replaceAllButton.addEventListener('click', () => {
-      this.fireSubmitEvent({
-        searchVal: searchValInput.value,
-        replaceTo: replaceToInput.value
-      })
-    })
-
     // styles
     const style = document.createElement('style')
     style.textContent = searchWindowStyles
 
-    shadow.appendChild(style)
-    shadow.appendChild(wrapper)
+    this.attachShadow({ mode: 'open' })
+    this.shadowRoot!.appendChild(style)
+    this.shadowRoot!.appendChild(wrapper)
     wrapper.appendChild(searchValInput)
     wrapper.appendChild(replaceToInput)
-    wrapper.appendChild(replaceAllButton)
+    wrapper.appendChild(this._replaceAllButton)
+    this._replaceAllButton.appendChild(this._replaceIcon)
+
+    this.rendered = true
   }
 
-  fireSubmitEvent(detail: { searchVal: string; replaceTo: string }) {
+  render() {
+    this.setReplaceAllButtonStatus(this.isLoading)
+  }
+
+  static get observedAttributes() {
+    return ['loading']
+  }
+
+  attributeChangedCallback() {
+    this.render()
+  }
+
+  get isLoading() {
+    return this.getAttribute('loading') !== null
+  }
+
+  setReplaceAllButtonStatus(isLoading: boolean): void {
+    if (isLoading) {
+      this._replaceAllButton.setAttribute('disabled', '')
+    } else {
+      this._replaceAllButton.removeAttribute('disabled')
+    }
+    const iconUrl = isLoading ? LOADING_ICON_URL : REPLACE_ICON_URL
+    this._replaceIcon.setAttribute('src', iconUrl)
+  }
+
+  fireSubmitEvent(detail: { searchVal: string; replaceTo: string }): void {
     const event = new CustomEvent('submit', { detail })
     this.dispatchEvent(event)
   }

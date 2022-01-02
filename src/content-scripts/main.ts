@@ -10,7 +10,7 @@ function main() {
   $searchWindow = document.createElement('search-window')
   $searchWindow.addEventListener('submit', (e: any) => {
     const { searchVal, replaceTo } = e.detail
-    replaceText(searchVal, replaceTo)
+    replaceAll(searchVal, replaceTo)
   })
   document.body.append($searchWindow)
 
@@ -50,7 +50,7 @@ const replaceTextInBlock = ($block: HTMLElement, replacedText: string) => {
   document.execCommand('insertText', false, replacedText)
 }
 
-const replaceText = async (searchVal: string, replaceTo: string) => {
+const replaceAll = async (searchVal: string, replaceTo: string) => {
   if (searchVal.length === 0) {
     return
   }
@@ -74,7 +74,7 @@ const replaceText = async (searchVal: string, replaceTo: string) => {
   await wait(500) // 少し待つ必要がある
 
   notionTextBlocks.forEach(($textBlock) => {
-    let text = $textBlock.innerText
+    const text = $textBlock.innerText
     if (text.includes(searchVal)) {
       // TODO 本当は毎回の置換前に確認したい
       const replacedText = text.replaceAll(searchVal, replaceTo)
@@ -86,7 +86,6 @@ const replaceText = async (searchVal: string, replaceTo: string) => {
           // TODO デコレーションを残したまま置換できるようにする
         } else {
           replaceTextInBlock($leaf, replacedText)
-          text = $textBlock.innerText
         }
       }
     }

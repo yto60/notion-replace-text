@@ -3,7 +3,8 @@
   "version": "1.0",
   "manifest_version": 3,
   "action": {
-    "default_title": "Notion Replace Text"
+    "default_title": "Notion Replace Text",
+    "default_popup": "popup.html"
   },
   "content_scripts": [
     {

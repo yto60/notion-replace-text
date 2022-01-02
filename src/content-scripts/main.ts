@@ -13,6 +13,15 @@ function main() {
     replaceText(searchVal, replaceTo)
   })
   document.body.append($searchWindow)
+
+  chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
+    const { showSearchBox } = request
+    if (!showSearchBox) {
+      $searchWindow.setAttribute('hidden', 'true')
+    } else {
+      $searchWindow.removeAttribute('hidden')
+    }
+  })
 }
 
 const wait = async (milliseconds: number) => {

@@ -2,9 +2,11 @@
   "name": "notion-replace-text",
   "version": "1.0",
   "manifest_version": 3,
+  "background": {
+    "service_worker": "background.ts"
+  },
   "action": {
-    "default_title": "Notion Replace Text",
-    "default_popup": "popup.html"
+    "default_title": "Notion Replace Text"
   },
   "content_scripts": [
     {

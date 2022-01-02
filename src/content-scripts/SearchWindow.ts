@@ -23,7 +23,7 @@ export default class SearchWindow extends HTMLElement {
 
     // buttons
     this._replaceAllButton.setAttribute('class', 'replace-all-button')
-    this._replaceAllButton.addEventListener('click', () => {
+    const submitHandler = () => {
       if (this.isLoading) {
         return
       }
@@ -31,6 +31,12 @@ export default class SearchWindow extends HTMLElement {
         searchVal: searchValInput.value,
         replaceTo: replaceToInput.value
       })
+    }
+    this._replaceAllButton.addEventListener('click', submitHandler)
+    this._replaceAllButton.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        submitHandler()
+      }
     })
     this.setReplaceAllButtonStatus(false)
 

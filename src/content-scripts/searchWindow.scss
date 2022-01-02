@@ -19,12 +19,15 @@
     font-size: 12px;
     line-height: 20px;
     border: none;
-    &:focus {
-      outline: 1px solid gray;
-    }
 
     &.replace-to-input {
       grid-row-start: 2;
+    }
+  }
+
+  input, button {
+    &:focus {
+      outline: 1px solid gray;
     }
   }
 

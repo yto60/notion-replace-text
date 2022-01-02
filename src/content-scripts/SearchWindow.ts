@@ -13,11 +13,11 @@ export default class SearchWindow extends HTMLElement {
     // inputs
     const searchValInput = document.createElement('input')
     searchValInput.setAttribute('class', 'search-val-input')
-    searchValInput.placeholder = '検索'
+    searchValInput.placeholder = 'Find'
     searchValInput.addEventListener('keydown', inputKeydownHandler)
     const replaceToInput = document.createElement('input')
     replaceToInput.setAttribute('class', 'replace-to-input')
-    replaceToInput.placeholder = '置換'
+    replaceToInput.placeholder = 'Replace'
     replaceToInput.addEventListener('keydown', inputKeydownHandler)
 
     // buttons

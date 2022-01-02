@@ -1,0 +1,45 @@
+.wrapper {
+  position: fixed;
+  top: 60px;
+  right: 24px;
+  z-index: 999999;
+
+  width: 33%;
+  max-width: 360px;
+  min-width: 240px;
+
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-gap: 4px;
+  padding: 8px 12px;
+  background: whitesmoke;
+
+  input {
+    padding: 4px 8px;
+    font-size: 12px;
+    line-height: 20px;
+    border: none;
+    &:focus {
+      outline: 1px solid gray;
+    }
+
+    &.replace-to-input {
+      grid-row-start: 2;
+    }
+  }
+
+  .replace-all-button {
+    grid-row: span 2;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background: lightgray;
+    &:hover {
+      background: darkgray;
+    }
+    // TODO disabled 時の表示
+    // &:disabled {
+    //   opacity: 0.32;
+    // }
+  }
+}

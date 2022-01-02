@@ -42,7 +42,7 @@ const replaceTextInBlock = ($block: HTMLElement, replacedText: string) => {
 }
 
 const replaceText = async (searchVal: string, replaceTo: string) => {
-  if (searchVal.length === 0 || replaceTo.length === 0) {
+  if (searchVal.length === 0) {
     return
   }
   if (!window.confirm('Replace All?')) {

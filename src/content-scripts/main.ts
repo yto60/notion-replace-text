@@ -30,7 +30,7 @@ const getFirstLeaf = ($parent: HTMLElement): HTMLElement => {
   return $parent
 }
 
-const replaceAllInBlock = ($block: HTMLElement, replacedText: string) => {
+const replaceTextInBlock = ($block: HTMLElement, replacedText: string) => {
   // TODO 脱 execCommand (https://stackoverflow.com/questions/60581285/execcommand-is-now-obsolete-whats-the-alternative)
   $block.focus()
   document.execCommand('selectAll')
@@ -63,10 +63,11 @@ const replaceText = async (searchVal: string, replaceTo: string) => {
 
   notionTextBlocks.forEach(($textBlock) => {
     let text = $textBlock.innerText
-    while (text.includes(searchVal)) {
-      const replacedText = text.replace(searchVal, replaceTo)
+    if (text.includes(searchVal)) {
+      // TODO 本当は毎回の置換前に確認したい
+      const replacedText = text.replaceAll(searchVal, replaceTo)
       const $leaf = getFirstLeaf($textBlock)
-      replaceAllInBlock($leaf, replacedText) // TODO 本当は毎回の置換前に確認したい
+      replaceTextInBlock($leaf, replacedText)
       text = $textBlock.innerText
     }
   })

@@ -1,6 +1,6 @@
 {
   "name": "notion-replace-text",
-  "version": "1.0",
+  "version": "0.1.0",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.ts"
@@ -10,7 +10,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.notion.so/*", "https://notion.so/*"],
+      "matches": ["https://www.notion.so/*"],
       "js": ["content-scripts/main.ts"]
     }
   ]

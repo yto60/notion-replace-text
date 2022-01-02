@@ -44,16 +44,18 @@ export default class SearchWindow extends HTMLElement {
     const searchValInput = document.createElement('input')
     searchValInput.setAttribute('class', 'search-val-input')
     searchValInput.placeholder = 'Find'
-    searchValInput.addEventListener('keydown', inputKeydownHandler)
     const replaceToInput = document.createElement('input')
     replaceToInput.setAttribute('class', 'replace-to-input')
     replaceToInput.placeholder = 'Replace'
-    replaceToInput.addEventListener('keydown', inputKeydownHandler)
 
     // styles
     const style = document.createElement('style')
     style.textContent = searchWindowStyles
 
+    // Notion 側のページ内容を誤って変更してしまうことを避けるため、イベントの伝搬を止めておかないといけない
+    this.preventEventPropagations()
+
+    // initial render
     this.attachShadow({ mode: 'open' })
     this.shadowRoot!.appendChild(style)
     this.shadowRoot!.appendChild(wrapper)
@@ -81,6 +83,19 @@ export default class SearchWindow extends HTMLElement {
     return this.getAttribute('loading') !== null
   }
 
+  preventEventPropagations() {
+    const eventNames: (keyof HTMLElementEventMap)[] = [
+      'click',
+      'keydown',
+      'copy',
+      'cut',
+      'paste'
+    ]
+    eventNames.forEach((name) => {
+      this.addEventListener(name, stopEventPropagation)
+    })
+  }
+
   setReplaceAllButtonStatus(isLoading: boolean): void {
     if (isLoading) {
       this._replaceAllButton.setAttribute('disabled', '')
@@ -97,6 +112,6 @@ export default class SearchWindow extends HTMLElement {
   }
 }
 
-const inputKeydownHandler = (e: KeyboardEvent) => {
+const stopEventPropagation = (e: Event) => {
   e.stopPropagation()
 }

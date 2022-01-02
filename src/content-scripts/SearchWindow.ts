@@ -23,6 +23,7 @@ export default class SearchWindow extends HTMLElement {
 
     // buttons
     this._replaceAllButton.setAttribute('class', 'replace-all-button')
+    this._replaceAllButton.setAttribute('title', 'Replace All')
     const submitHandler = () => {
       if (this.isLoading) {
         return

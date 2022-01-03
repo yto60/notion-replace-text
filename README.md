@@ -4,7 +4,7 @@ Notion のページ内テキストの置換を行う Chrome 拡張
 
 ## Install
 
-TODO
+https://chrome.google.com/webstore/detail/notion-replace-text/npfpbljohhiebihniengbpdmaeonjmpo
 
 ## Usage
 

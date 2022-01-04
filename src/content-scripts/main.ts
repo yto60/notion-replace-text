@@ -14,15 +14,24 @@ async function main() {
     replaceAll(searchVal, replaceTo)
   })
   document.body.append($searchWindow)
+  applySearchBoxAppearance(false) // isActive=false の場合にページ表示後に一瞬チラつくのを防ぐため、一旦 hidden にしておく
 
-  const showSearchBox = await getIsActive()
-  if (showSearchBox === false) {
-    applySearchBoxAppearance(showSearchBox)
+  const isActive = await getIsActive()
+  if (isActive) {
+    // isActive=true の場合はここで表示される
+    applySearchBoxAppearance(isActive)
   }
 
   chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
     const { showSearchBox } = request
     applySearchBoxAppearance(showSearchBox)
+  })
+}
+
+const wait = async (milliseconds: number) => {
+  // eslint-disable-next-line promise/avoid-new
+  return new Promise<void>((resolve) => {
+    setTimeout(resolve, milliseconds)
   })
 }
 
@@ -32,13 +41,6 @@ const applySearchBoxAppearance = (showSearchBox: boolean) => {
   } else {
     $searchWindow.removeAttribute('hidden')
   }
-}
-
-const wait = async (milliseconds: number) => {
-  // eslint-disable-next-line promise/avoid-new
-  return new Promise<void>((resolve) => {
-    setTimeout(resolve, milliseconds)
-  })
 }
 
 /** 要素の子孫を辿って、最初の contenteditable leaf を返す。見つからなければ null 。 */

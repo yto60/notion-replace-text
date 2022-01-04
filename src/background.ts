@@ -1,12 +1,24 @@
+import {
+  getIsActive,
+  LOCAL_STORAGE_KEY_IS_ACTIVE,
+  setIsActive
+} from './storage'
+
 const ACTIVE_ICON_COLOR = '#adadad'
 const INACTIVE_ICON_COLOR = '#d3d3d3'
 
-let isActive = true
-
-function main() {
-  setIsActive(true)
-  chrome.action.onClicked.addListener(() => {
+async function main() {
+  chrome.action.onClicked.addListener(async () => {
+    const isActive = await getIsActive()
     setIsActive(!isActive)
+  })
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== 'local') {
+      return
+    }
+
+    const newVal = !!changes[LOCAL_STORAGE_KEY_IS_ACTIVE].newValue
+    onIsActiveChange(newVal)
   })
 }
 
@@ -28,16 +40,14 @@ const getIconImageData = (color: string): ImageData => {
   return ctx.getImageData(0, 0, 16, 16)
 }
 
-const setIcon = () => {
+const setIcon = (isActive: boolean) => {
   const color = isActive ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR
   const imageData = getIconImageData(color)
   chrome.action.setIcon({ imageData })
 }
 
-const setIsActive = (val: boolean) => {
-  isActive = val
-  setIcon()
-
+const onIsActiveChange = (isActive: boolean) => {
+  setIcon(isActive)
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0]?.id!, { showSearchBox: isActive })
   })

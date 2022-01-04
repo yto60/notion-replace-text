@@ -1,11 +1,12 @@
 // polyfill for using web components in chrome extension (refs: https://stackoverflow.com/questions/30022350)
 import '@webcomponents/custom-elements'
+import { getIsActive } from '../storage'
 
 import SearchWindow from './searchWindow'
 
 let $searchWindow: HTMLElement
 
-function main() {
+async function main() {
   customElements.define('search-window', SearchWindow)
   $searchWindow = document.createElement('search-window')
   $searchWindow.addEventListener('submit', (e: any) => {
@@ -14,14 +15,23 @@ function main() {
   })
   document.body.append($searchWindow)
 
+  const showSearchBox = await getIsActive()
+  if (showSearchBox === false) {
+    applySearchBoxAppearance(showSearchBox)
+  }
+
   chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
     const { showSearchBox } = request
-    if (!showSearchBox) {
-      $searchWindow.setAttribute('hidden', 'true')
-    } else {
-      $searchWindow.removeAttribute('hidden')
-    }
+    applySearchBoxAppearance(showSearchBox)
   })
+}
+
+const applySearchBoxAppearance = (showSearchBox: boolean) => {
+  if (!showSearchBox) {
+    $searchWindow.setAttribute('hidden', 'true')
+  } else {
+    $searchWindow.removeAttribute('hidden')
+  }
 }
 
 const wait = async (milliseconds: number) => {

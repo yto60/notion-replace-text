@@ -11,6 +11,9 @@ const ACTIVE_TITLE = 'Active (Click icon to hide search box.)'
 const INACTIVE_TITLE = 'Inactive (Click icon to show search box.)'
 
 async function main() {
+  const isActive = await getIsActive()
+  onIsActiveChange(isActive)
+
   chrome.action.onClicked.addListener(async () => {
     const isActive = await getIsActive()
     setIsActive(!isActive)
